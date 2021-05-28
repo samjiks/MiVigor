@@ -30,6 +30,13 @@ actor  {
         db.create(hashMap, msg.caller, profile);
     };
 
+    
+
+    public func healthcheck(): async Bool { true };
+
+    public shared query(msg) func getOwnId(): async UserId { msg.caller }
+
+
 
 
 
