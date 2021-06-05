@@ -3,6 +3,8 @@ import logo from "./assets/logo.svg"
 import "./App.css"
 import { counter, supplier } from "./agent"
 
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -12,17 +14,16 @@ class App extends React.Component {
     };
   }
 
-  async getDoctorProfiles() {
-   const doctors = supplier.showDoctorProfiles();
-   console.log(doctors.firstName);
-   console.log(doctors.lastName);
+  async getUserProfiles() {
+   const users = supplier.showUserProfiles();
+   console.log(users);
   }
 
   async onSubmit(e) {
     e.preventDefault();
     console.log(this.state);
-    supplier.addDoctorProfile({firstName: this.state.firstname, lastName: this.state.lastname});
-    console.log(this.getDoctorProfiles())
+    supplier.addUserProfile({firstName: this.state.firstname, lastName: this.state.lastname});
+    console.log(this.getUserProfiles())
   }
 
   render() {

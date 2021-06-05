@@ -1,47 +1,45 @@
-import Types "types";
-import Database "database";
+import Bool "mo:base/Bool";
 import Debug "mo:base/Debug";
 import Int "mo:base/Int";
-import HashMap "mo:base/HashMap";
+import Iter "mo:base/Iter";
+import List "mo:base/List";
 import Principal "mo:base/Principal";
+import Types "types";
+import User "user";
 
 
 actor  {
-    type Profile = Types.Profile;
+    type UserProfile = Types.UserProfile;
+    type SubProfile = Types.SubProfile;
+
     type UserId = Types.UserId;
-    public type DoctorId = Nat;
-    public type VolunteerId = Nat;
-    public type SupplierId = Nat;
-    
-    func isEq(x: UserId, y: UserId): Bool { x == y };
 
-    private stable var hashMap = HashMap.HashMap<UserId, Profile>(1, isEq, Principal.hash);
+    var user: User.User = User.User();
 
-    var doctorNext : DoctorId = 100000;
-    var volunteerNext : VolunteerId = 200000;
-    var supplierNext : SupplierId = 300000;
-
-    var db: Database.Database = Database.Database();
-
-    public shared(msg) func addUserProfile(profile: Profile) : async () {
+    public shared(msg) func addUserProfile(profile: UserProfile) : async (){
         Debug.print(profile.firstName);
         Debug.print(profile.lastName);
         Debug.print(Principal.toText(msg.caller));
-        db.create(hashMap, msg.caller, profile);
+        user.create(msg.caller, profile);
     };
 
-    
+    public shared(msg) func addUserSubProfile(profile: SubProfile) : async (){
+        Debug.print(profile.firstName);
+        Debug.print(profile.lastName);
+        Debug.print(Principal.toText(msg.caller));
+        user.createSubProfile(msg.caller, profile);
+    };
+
+    public query(msg) func getAllUserSubProfile(userId: UserId) : async [SubProfile] {
+        var updated : [SubProfile] = [];
+        for (s : SubProfile in user.findAllSubProfiles(userId)) {
+            updated := Array.append<SubProfile>(updated, [s]);
+        };
+        updated;
+    };
 
     public func healthcheck(): async Bool { true };
 
     public shared query(msg) func getOwnId(): async UserId { msg.caller }
-
-
-
-
-
-
-
-
 
 };
